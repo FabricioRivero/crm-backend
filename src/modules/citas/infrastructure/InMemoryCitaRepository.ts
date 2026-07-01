@@ -30,8 +30,4 @@ export class InMemoryCitaRepository implements CitaRepository {
       (c) => c.getEmpleadoId() === empleadoId && mismoDia(c.getFechaHora(), fecha),
     );
   }
-
-  public async eliminar(id: string): Promise<void> {
-    this.citas.delete(id);
-  }
 }

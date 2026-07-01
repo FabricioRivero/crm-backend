@@ -9,7 +9,8 @@ export enum EstadoCitaEnum {
 
 /**
  * Value Object que encapsula el estado de una cita Y las reglas
- * de qué transiciones son válidas. Esto es lógica de negocio pura.
+ * de qué transiciones son válidas. Esto es lógica de negocio pura,
+ * no un simple string.
  */
 export class EstadoCita {
   private readonly estado: EstadoCitaEnum;

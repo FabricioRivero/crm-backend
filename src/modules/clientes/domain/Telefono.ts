@@ -1,15 +1,12 @@
 import { DomainError } from '../../../shared/domain/DomainError';
 
-/**
- * Value Object: Teléfono
- */
 export class Telefono {
   private readonly value: string;
 
-  constructor(telefono: string) {
-    const limpio = telefono.replace(/\s/g, '');
-    if (limpio.length < 7) {
-      throw new DomainError(`Teléfono demasiado corto: "${telefono}"`);
+  constructor(value: string) {
+    const limpio = value.replace(/[\s-]/g, '');
+    if (!/^\+?\d{7,15}$/.test(limpio)) {
+      throw new DomainError(`El teléfono "${value}" no es válido`);
     }
     this.value = limpio;
   }

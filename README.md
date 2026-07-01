@@ -18,130 +18,120 @@ Backend del sistema CRM de Citas para Negocios, desarrollado con **Node.js**, **
 - **Testing:** Jest + Supertest (Unitarios, Integración, E2E)
 - **Herramientas:** Node.js, npm, ts-node-dev
 
-## Estructura del Proyecto (Arquitectura Hexagonal)
-crm-backend/
-├── .env                                    # Variables de entorno (PORT=3000)
-├── .gitignore                              # Ignora node_modules, dist, coverage
-├── jest.config.js                          # Configuración de Jest
-├── package.json                            # Dependencias y scripts
-├── package-lock.json                       # Lock de dependencias
-├── tsconfig.json                           # Configuración TypeScript
-├── src/
-│   ├── app.ts                              # Configuración Express (routes, CORS)
-│   ├── server.ts                           # Punto de entrada (levanta servidor)
-│   ├── shared/
-│   │   └── domain/
-│   │       ├── DomainError.ts              # Clase de error de dominio
-│   │       └── Persona.ts                  # Clase abstracta base
-│   └── modules/
-│       ├── clientes/
-│       │   ├── domain/
-│       │   │   ├── Cliente.ts              # Entidad Cliente
-│       │   │   ├── Empleado.ts             # Entidad Empleado
-│       │   │   ├── Email.ts                # Value Object Email
-│       │   │   ├── Telefono.ts             # Value Object Teléfono
-│       │   │   ├── ClienteRepository.ts    # Puerto (interfaz)
-│       │   │   └── EmpleadoRepository.ts  # Puerto (interfaz)
-│       │   ├── application/
-│       │   │   ├── RegistrarClienteUseCase.ts
-│       │   │   ├── ListarClientesUseCase.ts
-│       │   │   └── BuscarClientePorIdUseCase.ts
-│       │   └── infrastructure/
-│       │       ├── InMemoryClienteRepository.ts
-│       │       ├── ClienteController.ts
-│       │       └── clientes.routes.ts
-│       └── citas/
-│           ├── domain/
-│           │   ├── Cita.ts                 # Entidad Cita
-│           │   ├── EstadoCita.ts           # Value Object Estado con reglas
-│           │   └── CitaRepository.ts       # Puerto (interfaz)
-│           ├── application/
-│           │   ├── AgendarCitaUseCase.ts
-│           │   ├── CambiarEstadoCitaUseCase.ts
-│           │   └── ListarCitasUseCase.ts
-│           └── infrastructure/
-│               ├── InMemoryCitaRepository.ts
-│               ├── CitaController.ts
-│               └── citas.routes.ts
-└── tests/
-    ├── e2e/
-    │   └── api.test.ts                     # 6 tests E2E (Supertest)
-    ├── integration/
-    │   └── InMemoryCitaRepository.integration.test.ts  # 4 tests integración
-    └── unit/
-        ├── citas/
-        │   ├── Cita.test.ts                # 6 tests entidad Cita
-        │   └── EstadoCita.test.ts            # 5 tests Value Object Estado
-        └── clientes/
-            ├── Cliente.test.ts             # 8 tests (Email, Teléfono, Cliente)
-            └── RegistrarClienteUseCase.test.ts  # 4 tests caso de uso
+## Estructura del Proyecto
 
+```
+src/
+├── shared/
+│   └── domain/
+│       ├── DomainError.ts          # Excepción base de dominio
+│       └── Persona.ts              # Clase abstracta base
+├── modules/
+│   ├── clientes/
+│   │   ├── domain/                 # Entidades, Value Objects, Puertos
+│   │   │   ├── Cliente.ts
+│   │   │   ├── Empleado.ts
+│   │   │   ├── Especialidad.ts     # Value Object
+│   │   │   ├── Email.ts            # Value Object
+│   │   │   ├── Telefono.ts         # Value Object
+│   │   │   ├── ClienteRepository.ts   # Puerto (interfaz)
+│   │   │   └── EmpleadoRepository.ts  # Puerto (interfaz)
+│   │   ├── application/            # Casos de uso
+│   │   │   ├── RegistrarClienteUseCase.ts
+│   │   │   ├── ListarClientesUseCase.ts
+│   │   │   └── BuscarClientePorIdUseCase.ts
+│   │   └── infrastructure/         # Adaptadores
+│   │       ├── InMemoryClienteRepository.ts
+│   │       ├── ClienteController.ts
+│   │       └── clientes.routes.ts
+│   └── citas/
+│       ├── domain/
+│       │   ├── Cita.ts
+│       │   ├── EstadoCita.ts       # Value Object con reglas de transición
+│       │   └── CitaRepository.ts   # Puerto
+│       ├── application/
+│       │   ├── AgendarCitaUseCase.ts
+│       │   ├── CambiarEstadoCitaUseCase.ts
+│       │   └── ListarCitasUseCase.ts
+│       └── infrastructure/
+│           ├── InMemoryCitaRepository.ts
+│           ├── CitaController.ts
+│           └── citas.routes.ts
+├── app.ts                          # Configuración Express (testeable sin puerto)
+└── server.ts                       # Punto de entrada
 
-## Conceptos POO Aplicados
+tests/
+├── unit/          # Dominio + casos de uso (con repos mockeados)
+├── integration/   # Adaptadores reales (InMemoryCitaRepository)
+└── e2e/           # Endpoints HTTP completos con Supertest
+```
+
+## Conceptos POO / DDD Aplicados
 
 | Concepto | Implementación |
 |----------|---------------|
 | **Abstracción** | Clase `Persona` abstracta |
 | **Herencia** | `Cliente` y `Empleado` heredan de `Persona` |
-| **Polimorfismo** | `getRol()` implementado diferente en cada subclase |
+| **Polimorfismo** | `getRol()` implementado distinto en cada subclase |
 | **Encapsulamiento** | Atributos `private`/`protected` con getters |
-| **Interfaces** | `ClienteRepository`, `CitaRepository` (puertos) |
-| **Genéricos** | Repositorio genérico en memoria |
-| **Excepciones** | `DomainError` para validaciones de negocio |
+| **Interfaces (Puertos)** | `ClienteRepository`, `CitaRepository`, `EmpleadoRepository` |
+| **Value Objects** | `Email`, `Telefono`, `Especialidad`, `EstadoCita` (inmutables, se autovalidan) |
+| **Excepciones de dominio** | `DomainError` en vez de `Error` genérico |
+| **Inversión de dependencias** | Casos de uso dependen de interfaces, no de implementaciones concretas |
 
 ## Instalación y Ejecución
 
 ```bash
-# Clonar
 git clone https://github.com/FabricioRivero/crm-backend.git
 cd crm-backend
-
-# Instalar dependencias
 npm install
 
-# Modo desarrollo
-npm run dev
+npm run dev      # desarrollo (recarga automática)
+npm run build     # compila a dist/
+npm start        # ejecuta el compilado
+```
 
-# Compilar
-npm run build
+El servidor corre en `http://localhost:3000`
 
-# Ejecutar compilado
-npm start
+## Tests
 
-El servidor corre en http://localhost:3000
-
-Tests
-# Todos los tests
-npm test
-
-# Solo unitarios
-npm run test:unit
-
-# Solo integración
+```bash
+npm test               # todos
+npm run test:unit      # solo unitarios
 npm run test:integration
-
-# Solo E2E
 npm run test:e2e
+npm run test:coverage  # con cobertura
+```
 
-# Con cobertura
-npm run test:coverage
+### Resultado actual (verificado)
 
-Resultados de Tests
-33 tests en total
-23 unitarios (dominio + casos de uso)
-4 de integración (adaptadores reales)
-6 E2E (endpoints HTTP con Supertest)
+```
+Test Suites: 8 passed, 8 total
+Tests:       37 passed, 37 total
+```
 
-API Endpoints
-| Método | Endpoint                | Descripción            |
-| ------ | ----------------------- | ---------------------- |
-| GET    | `/health`               | Estado del servidor    |
-| POST   | `/api/clientes`         | Crear cliente          |
-| GET    | `/api/clientes`         | Listar clientes        |
-| GET    | `/api/clientes/:id`     | Buscar cliente por ID  |
-| POST   | `/api/citas`            | Agendar cita           |
-| GET    | `/api/citas`            | Listar citas           |
-| PATCH  | `/api/citas/:id/estado` | Cambiar estado de cita |
+- **26 unitarios** — dominio (entidades, value objects) y casos de uso con repositorios mockeados
+- **4 de integración** — adaptador real `InMemoryCitaRepository` contra el contrato del puerto
+- **8 E2E** — endpoints HTTP reales golpeados con Supertest sobre la app Express completa
 
-Arquitectura Hexagonal
-El dominio (entidades, value objects, puertos) no depende de ninguna tecnología externa. Los adaptadores (Express, repositorios en memoria) implementan los puertos definidos por el dominio. Esto permite cambiar la base de datos o el framework web sin tocar la lógica de negocio.
+## API Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/health` | Estado del servidor |
+| POST | `/api/clientes` | Registrar cliente |
+| GET | `/api/clientes` | Listar clientes |
+| GET | `/api/clientes/:id` | Buscar cliente por ID |
+| POST | `/api/citas` | Agendar cita |
+| GET | `/api/citas` | Listar citas (`?clienteId=` opcional) |
+| PATCH | `/api/citas/:id/estado` | Cambiar estado (`{"accion": "confirmar" \| "completar" \| "cancelar"}`) |
+
+## Arquitectura Hexagonal — Por qué importa
+
+El **dominio** (`domain/`) no depende de Express, ni de una base de datos, ni de ningún framework. Define **puertos** (interfaces como `ClienteRepository`).
+
+La **infraestructura** (`infrastructure/`) implementa esos puertos con **adaptadores** concretos (hoy en memoria; mañana podría ser MongoDB o PostgreSQL) sin que el dominio se entere del cambio.
+
+La **aplicación** (`application/`) orquesta: recibe datos primitivos, arma entidades de dominio, invoca reglas de negocio, y usa el puerto para persistir — sin saber si eso termina en memoria o en un disco.
+
+Esto es lo que permite, por ejemplo, testear `RegistrarClienteUseCase` con un repositorio *mockeado* en segundos, sin levantar ninguna base de datos real.

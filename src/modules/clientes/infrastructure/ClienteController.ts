@@ -39,7 +39,7 @@ export class ClienteController {
 
   public buscarPorId = async (req: Request, res: Response): Promise<void> => {
     try {
-      const cliente = await this.buscarClientePorIdUseCase.ejecutar(req.params.id);
+      const cliente = await this.buscarClientePorIdUseCase.ejecutar(String(req.params.id));
       res.status(200).json(cliente.toPrimitives());
     } catch (error) {
       if (error instanceof DomainError) {

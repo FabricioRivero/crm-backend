@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { randomUUID as uuid } from 'crypto';
 import { Cita } from '../domain/Cita';
 import { CitaRepository } from '../domain/CitaRepository';
 import { DomainError } from '../../../shared/domain/DomainError';
@@ -9,7 +9,6 @@ export interface AgendarCitaDTO {
   servicioId: string;
   fechaHora: string; // ISO string
   duracionMinutos: number;
-  notas?: string;
 }
 
 export class AgendarCitaUseCase {
@@ -23,15 +22,7 @@ export class AgendarCitaUseCase {
       fechaHora,
     );
 
-    const cita = new Cita(
-      uuid(),
-      dto.clienteId,
-      dto.empleadoId,
-      dto.servicioId,
-      fechaHora,
-      undefined,
-      dto.notas || '',
-    );
+    const cita = new Cita(uuid(), dto.clienteId, dto.empleadoId, dto.servicioId, fechaHora);
 
     const haySolapamiento = citasDelEmpleado.some((c) =>
       c.seSuperponeCon(fechaHora, dto.duracionMinutos),

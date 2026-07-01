@@ -2,8 +2,9 @@ import { InMemoryCitaRepository } from '../../src/modules/citas/infrastructure/I
 import { Cita } from '../../src/modules/citas/domain/Cita';
 
 /**
- * Test de INTEGRACIÓN: probamos la implementación real del adaptador
- * (no un mock), verificando que cumple el contrato del puerto CitaRepository.
+ * Test de INTEGRACIÓN: a diferencia del unitario, aquí probamos la
+ * implementación real del adaptador (no un mock), verificando que
+ * cumple el contrato del puerto CitaRepository correctamente.
  */
 describe('InMemoryCitaRepository (integración)', () => {
   let repositorio: InMemoryCitaRepository;

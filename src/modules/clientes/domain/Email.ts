@@ -2,22 +2,22 @@ import { DomainError } from '../../../shared/domain/DomainError';
 
 /**
  * Value Object: Email
- * Inmutable, sin identidad propia. Dos emails con el mismo valor son iguales.
+ * Un Value Object no tiene identidad propia, se compara por su valor,
+ * y es inmutable. Se autovalida en el constructor.
  */
 export class Email {
   private readonly value: string;
 
-  constructor(email: string) {
-    const normalized = email.toLowerCase().trim();
-    if (!this.esValido(normalized)) {
-      throw new DomainError(`Email inválido: "${email}"`);
+  constructor(value: string) {
+    if (!Email.esValido(value)) {
+      throw new DomainError(`El email "${value}" no tiene un formato válido`);
     }
-    this.value = normalized;
+    this.value = value.toLowerCase().trim();
   }
 
-  private esValido(email: string): boolean {
+  private static esValido(value: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+    return regex.test(value);
   }
 
   public getValue(): string {
@@ -26,5 +26,9 @@ export class Email {
 
   public equals(other: Email): boolean {
     return this.value === other.value;
+  }
+
+  public toString(): string {
+    return this.value;
   }
 }

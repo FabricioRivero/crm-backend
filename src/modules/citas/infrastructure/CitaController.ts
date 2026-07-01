@@ -22,7 +22,7 @@ export class CitaController {
 
   public cambiarEstado = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = String(req.params.id);
       const { accion } = req.body as { accion: AccionCita };
       const cita = await this.cambiarEstadoCitaUseCase.ejecutar(id, accion);
       res.status(200).json(cita.toPrimitives());

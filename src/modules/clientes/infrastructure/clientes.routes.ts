@@ -22,5 +22,5 @@ clientesRouter.post('/', clienteController.registrar);
 clientesRouter.get('/', clienteController.listar);
 clientesRouter.get('/:id', clienteController.buscarPorId);
 
-// Se exporta también el repositorio para poder reutilizarlo desde otros módulos si es necesario
+// Se exporta también el repositorio para poder reutilizarlo desde el módulo de Citas
 export { clienteRepository };

@@ -3,7 +3,7 @@ import { ClienteRepository } from '../domain/ClienteRepository';
 
 /**
  * ADAPTADOR (Adapter). Implementa el puerto ClienteRepository.
- * Usamos memoria para simplificar, pero se podría reemplazar
+ * Aquí usamos memoria para simplificar, pero se podría reemplazar
  * por MongoClienteRepository o SqlClienteRepository sin tocar
  * el dominio ni los casos de uso.
  */

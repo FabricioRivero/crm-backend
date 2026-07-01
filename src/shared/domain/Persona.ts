@@ -1,5 +1,9 @@
 import { DomainError } from './DomainError';
 
+/**
+ * Clase abstracta base. Aplica Abstracción + prepara el terreno
+ * para Herencia (Cliente, Empleado) y Polimorfismo (getRol()).
+ */
 export abstract class Persona {
   protected readonly id: string;
   protected nombre: string;
@@ -25,5 +29,6 @@ export abstract class Persona {
     return `${this.nombre} ${this.apellido}`;
   }
 
+  /** Polimorfismo: cada subclase define su propio rol */
   public abstract getRol(): string;
 }

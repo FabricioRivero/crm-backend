@@ -8,7 +8,7 @@ export class BuscarClientePorIdUseCase {
   public async ejecutar(id: string): Promise<Cliente> {
     const cliente = await this.clienteRepository.buscarPorId(id);
     if (!cliente) {
-      throw new DomainError(`Cliente con id ${id} no encontrado`);
+      throw new DomainError(`No existe un cliente con id ${id}`);
     }
     return cliente;
   }

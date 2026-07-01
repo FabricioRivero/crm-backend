@@ -31,12 +31,29 @@ export class Cita {
     this.notas = notas;
   }
 
-  public getId(): string { return this.id; }
-  public getClienteId(): string { return this.clienteId; }
-  public getEmpleadoId(): string { return this.empleadoId; }
-  public getServicioId(): string { return this.servicioId; }
-  public getFechaHora(): Date { return this.fechaHora; }
-  public getEstado(): EstadoCita { return this.estado; }
+  public getId(): string {
+    return this.id;
+  }
+
+  public getClienteId(): string {
+    return this.clienteId;
+  }
+
+  public getEmpleadoId(): string {
+    return this.empleadoId;
+  }
+
+  public getServicioId(): string {
+    return this.servicioId;
+  }
+
+  public getFechaHora(): Date {
+    return this.fechaHora;
+  }
+
+  public getEstado(): EstadoCita {
+    return this.estado;
+  }
 
   public confirmar(): void {
     this.estado = this.estado.transicionarA(EstadoCitaEnum.CONFIRMADA);
